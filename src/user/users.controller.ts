@@ -7,7 +7,9 @@ import {
   Put,
   Post,
 } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common/decorators';
 import { User } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserService } from './user.service';
@@ -21,6 +23,7 @@ export class UsersController {
     return this.userService.createUser(dto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   getAllUsers(): Promise<User[]> {
     return this.userService.getUsers();
