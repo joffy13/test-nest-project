@@ -9,13 +9,15 @@ import {
 } from '@nestjs/common';
 import { UseGuards } from '@nestjs/common/decorators';
 import { User } from '@prisma/client';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guar';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserService } from './user.service';
+import { Roles } from 'src/auth/roles.decorator';
+import { ChangeRoleDto } from './dtos/change-role.dto';
 
 @Controller('user')
-export class UsersController {
+export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
@@ -23,7 +25,8 @@ export class UsersController {
     return this.userService.createUser(dto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
   @Get()
   getAllUsers(): Promise<User[]> {
     return this.userService.getUsers();
@@ -45,5 +48,12 @@ export class UsersController {
   @Delete(':id')
   deleteUser(@Param('id') id: string): Promise<User> {
     return this.userService.deleteUser(parseInt(id));
+  }
+
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
+  @Post('/role')
+  changeRole(@Body() dto: ChangeRoleDto): Promise<User> {
+    return this.userService.changeRole(dto);
   }
 }
