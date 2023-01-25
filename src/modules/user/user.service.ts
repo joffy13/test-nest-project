@@ -41,7 +41,6 @@ export class UserService {
     });
   }
   async changeRole(dto: ChangeRoleDto): Promise<User> {
-    console.log(dto.userId);
     const user = await this.prisma.user.update({
       data: { role: dto.role },
       where: { id: dto.userId },
