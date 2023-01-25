@@ -6,14 +6,15 @@ import {
   Delete,
   Put,
   Post,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UseGuards } from '@nestjs/common/decorators';
 import { User } from '@prisma/client';
-import { RolesGuard } from 'src/auth/roles.guar';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserService } from './user.service';
-import { Roles } from 'src/auth/roles.decorator';
+import { Roles } from 'src/common/decorators/roles.decorator';
 import { ChangeRoleDto } from './dtos/change-role.dto';
 
 @Controller('user')
@@ -33,21 +34,21 @@ export class UserController {
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string): Promise<User> {
-    return this.userService.getUserById(parseInt(id));
+  getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    return this.userService.getUserById(id);
   }
 
   @Put(':id')
   updateUser(
     @Body() dto: UpdateUserDto,
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<User> {
-    return this.userService.updateUser(dto, parseInt(id));
+    return this.userService.updateUser(dto, id);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string): Promise<User> {
-    return this.userService.deleteUser(parseInt(id));
+  deleteUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    return this.userService.deleteUser(id);
   }
 
   @Roles('ADMIN')
