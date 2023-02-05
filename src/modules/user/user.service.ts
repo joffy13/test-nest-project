@@ -23,10 +23,9 @@ export class UserService implements IUserService {
   }
 
   async getUserByEmail(email: string): Promise<any> {
-    const user = await this.prisma.user.findMany({
+    const user = await this.prisma.user.findFirst({
       where: { email },
     });
-    console.log(user);
     return user;
   }
 

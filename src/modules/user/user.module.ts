@@ -5,13 +5,13 @@ import { UserController } from './user.controller';
 import { IUserService } from './user.interface';
 import { AuthModule } from '../auth/auth.module';
 
+const userProvider = {
+  provide: IUserService,
+  useClass: UserService,
+};
+
 @Module({
-  providers: [
-    {
-      provide: IUserService,
-      useClass: UserService,
-    },
-  ],
+  providers: [userProvider],
   controllers: [UserController],
   imports: [PrismaModule, forwardRef(() => AuthModule)],
   exports: [IUserService],
