@@ -7,14 +7,15 @@ import {
   Put,
   Post,
   ParseIntPipe,
+  Inject,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { IUserService } from './user.interface';
+import { IUserService, iUserToken } from './user.interface';
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: IUserService) {}
+  constructor(@Inject(iUserToken) private readonly userService: IUserService) {}
 
   @Post()
   createUser(@Body() dto: CreateUserDto): Promise<User> {

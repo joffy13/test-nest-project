@@ -2,11 +2,11 @@ import { forwardRef, Module } from '@nestjs/common';
 import { PrismaModule } from 'prisma/prisma.module';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { IUserService } from './user.interface';
+import { IUserService, iUserToken } from './user.interface';
 import { AuthModule } from '../auth/auth.module';
 
-const userProvider = {
-  provide: IUserService,
+export const userProvider = {
+  provide: iUserToken,
   useClass: UserService,
 };
 
@@ -14,6 +14,6 @@ const userProvider = {
   providers: [userProvider],
   controllers: [UserController],
   imports: [PrismaModule, forwardRef(() => AuthModule)],
-  exports: [IUserService],
+  exports: [userProvider],
 })
 export class UserModule {}

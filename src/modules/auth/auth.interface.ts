@@ -1,6 +1,9 @@
 import { User } from '@prisma/client';
 import { LoginUserDto } from './dtos/login-user.dto';
 
-export abstract class IAuthService {
-  abstract validateUser(email: string, password: string): Promise<any>;
+export interface IAuthService {
+  validateUser(email: string, password: string): Promise<any>;
+  login(user: User): Promise<any>;
 }
+
+export const iAuthToken = Symbol('IAuthService');

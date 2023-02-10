@@ -1,17 +1,20 @@
+import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 
-export abstract class IUserService {
-  abstract createUser(data: CreateUserDto): Promise<User>;
+export interface IUserService {
+  createUser(data: CreateUserDto): Promise<User>;
 
-  abstract getUsers(): Promise<User[]>;
+  getUsers(): Promise<User[]>;
 
-  abstract getUserById(id: number): Promise<User>;
+  getUserById(id: number): Promise<User>;
 
-  abstract getUserByEmail(email: string): Promise<User>;
+  getUserByEmail(email: string): Promise<User>;
 
-  abstract updateUser(data: UpdateUserDto, id: number): Promise<User>;
+  updateUser(data: UpdateUserDto, id: number): Promise<User>;
 
-  abstract deleteUser(id: number): Promise<User>;
+  deleteUser(id: number): Promise<User>;
 }
+
+export const iUserToken = Symbol('IUserService');
