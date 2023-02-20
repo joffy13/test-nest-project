@@ -12,10 +12,10 @@ import {
 import { User } from '@prisma/client';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { IUserService, iUserToken } from './user.interface';
+import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
-  constructor(@Inject(iUserToken) private readonly userService: IUserService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   createUser(@Body() dto: CreateUserDto): Promise<User> {

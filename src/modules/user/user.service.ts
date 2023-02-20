@@ -1,16 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateUserDto } from 'src/modules/user/dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { IUserService } from './user.interface';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class UserService implements IUserService {
+export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createUser(data: CreateUserDto): Promise<User> {
-    return await this.prisma.user.create({ data });
+    const candidate = await this.getUserByEmail(data.email);
+    if (candidate) {
+      throw new HttpException('this email is exist', HttpStatus.BAD_GATEWAY);
+    }
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(data.password, salt);
+    return await this.prisma.user.create({
+      data: { ...data, password: hashedPassword },
+    });
   }
   async getUsers(): Promise<User[]> {
     return this.prisma.user.findMany();
@@ -30,8 +38,9 @@ export class UserService implements IUserService {
   }
 
   async updateUser(data: UpdateUserDto, id: number): Promise<User> {
+    console.log(data, id);
     return this.prisma.user.update({
-      data: data,
+      data,
       where: { id },
     });
   }

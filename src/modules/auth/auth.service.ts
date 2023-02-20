@@ -1,24 +1,23 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { HttpStatus } from '@nestjs/common/enums';
-import { HttpException } from '@nestjs/common/exceptions';
+import { Inject, Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { CreateUserDto } from '../user/dtos/create-user.dto';
-import { IUserService, iUserToken } from '../user/user.interface';
-import { IAuthService } from './auth.interface';
+import { UserService } from '../user/user.service';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { AuthResult } from './results/auth.result';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class AuthService implements IAuthService {
+export class AuthService {
   constructor(
-    @Inject(iUserToken) private userService: IUserService,
+    private userService: UserService,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
     const candidate = await this.userService.getUserByEmail(email);
-    if (candidate && candidate.password === password) {
+    const compare = await bcrypt.compare(password, candidate.password);
+    if (!compare) {
       const { password, ...result } = candidate;
       return result;
     }
@@ -31,19 +30,17 @@ export class AuthService implements IAuthService {
       message: 'user registered',
     };
     try {
-      console.log(dto);
       await this.userService.createUser(dto);
     } catch (err) {
       status = {
         success: false,
-        message: err,
+        message: err.message,
       };
     }
     return status;
   }
 
   async login(user: User) {
-    console.log(user);
     const payload = { email: user.email, id: user.id, role: user.role };
     return {
       ...user,
