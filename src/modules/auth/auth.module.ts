@@ -18,7 +18,7 @@ import { LocalStrategy } from './local.strategy';
     forwardRef(() => UserModule),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '3600s' },
     }),
   ],
   exports: [AuthService],

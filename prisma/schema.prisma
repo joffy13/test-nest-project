@@ -11,12 +11,14 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
   password String
   age      Int
   orders   Order[]
-  role     Role    @default(USER)
+  role     Role      @default(USER)
+  Rewiew   Rewiew[]
+  Product  Product[]
 
   @@map("users")
 }
@@ -28,6 +30,59 @@ model Order {
   delivered Boolean?
 
   @@map("orders")
+}
+
+model Product {
+  id     Int    @id @default(autoincrement())
+  name   String
+  rating Int?
+  price  Float
+  type   Type
+  author User?  @relation(fields: [authorId], references: [id])
+  authorId Int?
+  game   Game?  @relation(fields: [gameId], references: [id])
+  gameId Int?
+  app    App?   @relation(fields: [appId], references: [id])
+  appId  Int?
+
+  @@map("products")
+}
+
+model Game {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  image    String
+  products Product[]
+  genre    Genre
+
+  @@map("games")
+}
+
+model App {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  image   String
+  product Product[]
+
+  @@map("apps")
+}
+
+model Rewiew {
+  id      Int    @id @default(autoincrement())
+  comment String
+  rating  Int
+  author  User   @relation(fields: [userId], references: [id])
+  userId  Int
+
+  @@map("reviews")
+}
+
+enum Genre {
+  BattleRoyale
+}
+
+enum Type {
+  Game
 }
 
 enum Role {
