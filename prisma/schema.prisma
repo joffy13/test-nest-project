@@ -33,17 +33,17 @@ model Order {
 }
 
 model Product {
-  id     Int    @id @default(autoincrement())
-  name   String
-  rating Int?
-  price  Float
-  type   Type
-  author User?  @relation(fields: [authorId], references: [id])
+  id       Int    @id @default(autoincrement())
+  name     String
+  rating   Int?
+  price    Float
+  type     Type
+  author   User?  @relation(fields: [authorId], references: [id])
   authorId Int?
-  game   Game?  @relation(fields: [gameId], references: [id])
-  gameId Int?
-  app    App?   @relation(fields: [appId], references: [id])
-  appId  Int?
+  game     Game?  @relation(fields: [gameId], references: [id])
+  gameId   Int?
+  app      App?   @relation(fields: [appId], references: [id])
+  appId    Int?
 
   @@map("products")
 }
@@ -51,7 +51,7 @@ model Product {
 model Game {
   id       Int       @id @default(autoincrement())
   name     String    @unique
-  image    String
+  image    String?
   products Product[]
   genre    Genre
 
@@ -61,7 +61,7 @@ model Game {
 model App {
   id      Int       @id @default(autoincrement())
   name    String    @unique
-  image   String
+  image   String?
   product Product[]
 
   @@map("apps")
@@ -79,10 +79,12 @@ model Rewiew {
 
 enum Genre {
   BattleRoyale
+  RPG
 }
 
 enum Type {
   Game
+  App
 }
 
 enum Role {

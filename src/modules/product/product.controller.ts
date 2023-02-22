@@ -5,6 +5,8 @@ import {
   Post,
   UseGuards,
   Request,
+  Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { IProductService } from './product.interface';
@@ -17,8 +19,8 @@ export class ProductController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() dto: any, @Request() req) {
+  async create(@Request() req: any) {
     console.log(req.user);
-    return this.productService.create(dto, req.user.id);
+    return this.productService.create(req.body, req.user.id);
   }
 }
